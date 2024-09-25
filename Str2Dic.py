@@ -1,6 +1,3 @@
-import os
-os.system
-
 schema= "Nombre, Apellido, Edad, Email"
 row= "Valentina, Gomez Pereyra, 22, Valengomezp177@gmai.com"
 
