@@ -12,6 +12,12 @@ class Document:
     def __str__(self) -> str:
         return f'Documento | ID {self.id}\n{self.contenido}'
     
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "contenido": self.contenido
+        }
+    
 class Collection:
     def __init__(self, nombre: str):
         self.nombre = nombre
