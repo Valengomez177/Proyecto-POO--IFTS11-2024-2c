@@ -1,5 +1,5 @@
 from Str2Dic import Str2Dic
-from Custom_exceptions import *
+from Custom_exceptions import NonExistentCollectionError
 import json
 
 class Document:
@@ -7,37 +7,44 @@ class Document:
         self.id = id
         self.contenido = contenido if contenido is not None else {}
         
-    def obtener_valor(self, clave: str) -> str:
+    def get_value(self, clave: str) -> str:
         return self.contenido.get(clave, None)
     
-    def modificar_valor(self, clave: str, valor: str) -> None:
+    def modify_value(self, clave: str, valor: str) -> None:
         self.contenido[clave] = valor
+        
+    def to_json(self) -> str:
+        dic = {'title': '', 'content': {}}
+        dic['title'] = f'Documento ID {self.id}'
+        dic['content'] = self.contenido
+        return json.dumps(dic)
         
     def __str__(self) -> str:
         return f'Documento | ID {self.id}\n{self.contenido}'
     
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "contenido": self.contenido
-        }
     
 class Collection:
     def __init__(self, nombre: str):
         self.nombre = nombre
         self.documentos = {}
     
-    def añadir_documento(self, documento: Document) -> None:
-        if (type(documento) != Document):
+    def add_document(self, document: Document) -> None:
+        if (type(document) != Document):
             raise TypeError('No se ha ingresado un documento valido')
-        self.documentos[documento.id] = documento
+        self.documentos[document.id] = document
         
-    def eliminar_documento(self, id_documento: int) -> None:
-        if id_documento in self.documentos:
-            del self.documentos[id_documento]
+    def delete_document(self, id_document: int) -> None:
+        if id_document in self.documentos:
+            del self.documentos[id_document]
             
-    def buscar_documento(self, id_documento: int) -> Document | None:
-        return self.documentos.get(id_documento, None)
+    def get_document(self, id_document: int) -> Document | None:
+        return self.documentos.get(id_document, None)
+    
+    def list_documents(self) -> list[Document]:
+        total = []
+        for i in self.documentos:
+            total.append(self.documentos[i])
+        return total
     
     def __str__(self):
         return f'Coleccion {self.nombre} | {len(self.documentos)} Documento/s registrados'
@@ -46,15 +53,15 @@ class DBDocument:
     def __init__(self):
         self.colecciones = {}
         
-    def crear_coleccion(self, nombre_coleccion: str) -> None:
+    def create_collection(self, nombre_coleccion: str) -> None:
         if nombre_coleccion not in self.colecciones:
             self.colecciones[nombre_coleccion] = Collection(nombre_coleccion)
             
-    def eliminar_coleccion(self, nombre_coleccion: str) -> None:
+    def delete_collection(self, nombre_coleccion: str) -> None:
         if nombre_coleccion in self.colecciones:
             del self.colecciones[nombre_coleccion]
             
-    def obtener_coleccion(self, nombre_coleccion: str) -> Collection | None:
+    def get_collection(self, nombre_coleccion: str) -> Collection | None:
         return self.colecciones.get(nombre_coleccion, None)
     
     def import_csv(self, name: str, path: str) -> None:
