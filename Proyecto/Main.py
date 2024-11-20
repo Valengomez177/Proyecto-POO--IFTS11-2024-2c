@@ -1,4 +1,4 @@
-from Clases.Db import DBDocument
+from .Clases.Db import DBDocument
 
 def mostrar_menu():
     print("\n--- Base de Datos Documental ---")
