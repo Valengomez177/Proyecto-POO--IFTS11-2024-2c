@@ -1,4 +1,4 @@
-from Db import *
+from .Clases.Db import *
 
 def mostrar_menu():
     print("\n--- Base de Datos Documental ---")
