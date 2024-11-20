@@ -1,3 +1,7 @@
+from Str2Dic import Str2Dic
+from Custom_exceptions import *
+import json
+
 class Document:
     def __init__(self, id: int, contenido: dict = None):
         self.id = id
@@ -53,5 +57,21 @@ class DBDocument:
     def obtener_coleccion(self, nombre_coleccion: str) -> Collection | None:
         return self.colecciones.get(nombre_coleccion, None)
     
+    def import_csv(self, name: str, path: str) -> None:
+        if (type(path) != str):
+            raise AttributeError("Se ha ingresado una ruta inexistente.")
+        with open(path) as f:
+            schema = f.readline().replace("\n", "")
+            rows = f.readlines()
+            parser = Str2Dic(schema)
+            col = self.get_collection(name)
+            if (col == None):
+                raise NonExistentCollectionError("El documento indicado no existe")
+            doc_id = 0
+            for row in rows:
+                item = parser.convert(row.replace("\n", ""))
+                col.add_document(Document(doc_id, item))
+                doc_id += 1
+                
     def __str__(self):
         return f'BDDocument {self.nombre} | {len(self.documentos)} Coleccion/es registrados'
